@@ -1,15 +1,7 @@
-const InputText = ({
-  type,
-  name,
-  placeholder,
-  value,
-  onChange,
-  onBlur,
-  onFocus,
-}) => {
+const InputText = (props) => {
   return (
     <div>
-      <input type={type} name={name} placeholder={placeholder} />
+      <input {...props} />
     </div>
   );
 };
