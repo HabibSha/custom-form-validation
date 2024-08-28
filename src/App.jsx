@@ -1,6 +1,6 @@
 import { useState } from "react";
 import InputGroup from "./components/shared/InputGroup/InputGroup";
-import { deepClone } from "./utils/object-utils";
+import { deepClone, isObjectEmpty } from "./utils/object-utils";
 
 const init = {
   name: {
@@ -23,10 +23,21 @@ function App() {
   const [states, setStates] = useState({ ...init });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name: key, value } = e.target;
 
     const oldState = deepClone(states);
-    oldState[name].value = value;
+    const values = mapStateToValues(oldState);
+    oldState[key].value = value;
+
+    const { errors } = checkValidation(values);
+
+    if (oldState[key].focus && errors[key]) {
+      oldState[key].error = errors[key];
+    } else {
+      oldState[key].error = "";
+    }
+
+    console.log(errors);
 
     setStates(oldState);
 
@@ -46,6 +57,27 @@ function App() {
       acc[cur] = states[cur].value;
       return acc;
     }, {});
+  };
+
+  const checkValidation = (values) => {
+    let errors = {};
+
+    const { name, email, password } = values;
+
+    if (!name) {
+      errors.name = "Invalid name field";
+    }
+    if (!email) {
+      errors.email = "Invalid email field";
+    }
+    if (!password) {
+      errors.password = "Invalid password field";
+    }
+
+    return {
+      isValid: isObjectEmpty(errors),
+      errors,
+    };
   };
 
   return (
