@@ -41,7 +41,7 @@ function App() {
 
     setStates(oldState);
 
-    //Todo: we will not use this strategy when state is nested. here is init is a nested object.
+    //Todo: we will not use this strategy when state is nested. here, init is a nested object.
     // setStates({
     //   ...states,
     //   [name]: {
@@ -49,7 +49,22 @@ function App() {
     //     value: value,
     //   },
     // });
-    console.log(states);
+    // console.log(states);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const values = mapStateToValues(states);
+    const { errors, isValid } = checkValidation(values);
+    if (isValid) {
+      console.log(states);
+    } else {
+      const oldState = deepClone(states);
+      Object.keys(errors).forEach((key) => {
+        oldState[key].error = errors[key];
+      });
+      setStates(oldState);
+    }
   };
 
   const mapStateToValues = (states) => {
@@ -65,13 +80,13 @@ function App() {
     const { name, email, password } = values;
 
     if (!name) {
-      errors.name = "Invalid name field";
+      errors.name = "Invalid name field!";
     }
     if (!email) {
-      errors.email = "Invalid email field";
+      errors.email = "Invalid email field!";
     }
     if (!password) {
-      errors.password = "Invalid password field";
+      errors.password = "Invalid password field!";
     }
 
     return {
@@ -82,7 +97,7 @@ function App() {
 
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <InputGroup
           label={"What is your name?"}
           type={"text"}
@@ -90,6 +105,7 @@ function App() {
           placeholder={"Enter Name..."}
           value={states.name.value}
           handleChange={handleChange}
+          error={states.name.error}
         />
         <InputGroup
           label={"What is your Email?"}
@@ -98,6 +114,7 @@ function App() {
           placeholder={"Enter Email..."}
           value={states.email.value}
           handleChange={handleChange}
+          error={states.email.error}
         />
         <InputGroup
           label={"What is your password?"}
@@ -106,8 +123,9 @@ function App() {
           placeholder={"Enter Password..."}
           value={states.password.value}
           handleChange={handleChange}
+          error={states.password.error}
         />
-        <button>Submit</button>
+        <button type="submit">Submit</button>
       </form>
     </>
   );

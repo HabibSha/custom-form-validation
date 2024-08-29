@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import InputText from "../../UI/InputText/InputText";
 
 const InputGroup = ({
@@ -6,6 +8,7 @@ const InputGroup = ({
   type,
   name,
   value,
+  error,
   handleChange,
 }) => {
   return (
@@ -17,9 +20,21 @@ const InputGroup = ({
         placeholder={placeholder ?? ""}
         value={value}
         onChange={handleChange}
+        error={error}
       />
+      {error && <p style={{ color: "red", fontSize: "12px" }}>{error}</p>}
     </div>
   );
+};
+
+InputGroup.propTypes = {
+  label: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  error: PropTypes.string,
+  handleChange: PropTypes.func.isRequired,
 };
 
 export default InputGroup;
