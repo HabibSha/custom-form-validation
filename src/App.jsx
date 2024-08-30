@@ -19,6 +19,7 @@ const init = {
     focus: false,
   },
 };
+
 function App() {
   const [states, setStates] = useState({ ...init });
 
@@ -36,8 +37,6 @@ function App() {
     } else {
       oldState[key].error = "";
     }
-
-    console.log(errors);
 
     setStates(oldState);
 
@@ -65,6 +64,29 @@ function App() {
       });
       setStates(oldState);
     }
+  };
+
+  const handleFocus = (e) => {
+    const { name } = e.target;
+    const oldState = deepClone(states);
+    oldState[name].focus = true;
+    setStates(oldState);
+  };
+
+  const handleBlur = (e) => {
+    const key = e.target.name;
+    const oldState = deepClone(states);
+    const values = mapStateToValues(oldState);
+
+    const { errors } = checkValidation(values);
+
+    if (oldState[key].focus && errors[key]) {
+      oldState[key].error = errors[key];
+    } else {
+      oldState[key].error = "";
+    }
+
+    setStates(oldState);
   };
 
   const mapStateToValues = (states) => {
@@ -104,7 +126,9 @@ function App() {
           name={"name"}
           placeholder={"Enter Name..."}
           value={states.name.value}
-          handleChange={handleChange}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           error={states.name.error}
         />
         <InputGroup
@@ -113,7 +137,9 @@ function App() {
           name={"email"}
           placeholder={"Enter Email..."}
           value={states.email.value}
-          handleChange={handleChange}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           error={states.email.error}
         />
         <InputGroup
@@ -122,7 +148,9 @@ function App() {
           name={"password"}
           placeholder={"Enter Password..."}
           value={states.password.value}
-          handleChange={handleChange}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           error={states.password.error}
         />
         <button type="submit">Submit</button>

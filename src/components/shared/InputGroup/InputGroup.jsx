@@ -9,7 +9,9 @@ const InputGroup = ({
   name,
   value,
   error,
-  handleChange,
+  onChange,
+  onFocus,
+  onBlur,
 }) => {
   return (
     <div>
@@ -19,7 +21,9 @@ const InputGroup = ({
         type={type}
         placeholder={placeholder ?? ""}
         value={value}
-        onChange={handleChange}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
         error={error}
       />
       {error && <p style={{ color: "red", fontSize: "12px" }}>{error}</p>}
@@ -34,7 +38,9 @@ InputGroup.propTypes = {
   name: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   error: PropTypes.string,
-  handleChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
 };
 
 export default InputGroup;

@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
 
-const InputText = (props) => {
+import "../../../App.css";
+
+const InputText = ({ error, ...props }) => {
   return (
     <div>
-      <input {...props} className={`${props.error ? "border-red" : ""}`} />
+      <input {...props} className={`${error ? "border-red" : ""}`} />
     </div>
   );
 };
@@ -14,6 +16,8 @@ InputText.propTypes = {
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  onFocus: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
   error: PropTypes.string,
 };
 
