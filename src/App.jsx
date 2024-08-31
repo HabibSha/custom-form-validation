@@ -1,162 +1,107 @@
-import { useState } from "react";
 import InputGroup from "./components/shared/InputGroup/InputGroup";
-import { deepClone, isObjectEmpty } from "./utils/object-utils";
+import useForm from "./hooks/useForm";
 
 const init = {
-  name: {
-    value: "",
-    error: "",
-    focus: false,
-  },
-  email: {
-    value: "",
-    error: "",
-    focus: false,
-  },
-  password: {
-    value: "",
-    error: "",
-    focus: false,
-  },
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
 };
 
-function App() {
-  const [states, setStates] = useState({ ...init });
+const validate = (values) => {
+  let errors = {};
 
-  const handleChange = (e) => {
-    const { name: key, value } = e.target;
+  if (!values.firstName) {
+    errors.firstName = "First Name is required!";
+  }
+  if (!values.lastName) {
+    errors.lastName = "Last Name is required!";
+  }
+  if (!values.email) {
+    errors.email = "Email is required!";
+  }
+  if (!values.password) {
+    errors.password = "Password is required!";
+  }
 
-    const oldState = deepClone(states);
-    const values = mapStateToValues(oldState);
-    oldState[key].value = value;
+  return errors;
+};
 
-    const { errors } = checkValidation(values);
+const App = () => {
+  const {
+    formState: state,
+    handleChange,
+    handleBlur,
+    handleFocused,
+    handleClearInputs,
+    handleSubmit,
+  } = useForm({ init, validate });
 
-    if (oldState[key].focus && errors[key]) {
-      oldState[key].error = errors[key];
+  const cb = ({ hasError, values, errors }) => {
+    if (hasError) {
+      alert("[ERROR]" + JSON.stringify(errors));
     } else {
-      oldState[key].error = "";
+      alert("[SUCCESS]" + JSON.stringify(values));
     }
-
-    setStates(oldState);
-
-    //Todo: we will not use this strategy when state is nested. here, init is a nested object.
-    // setStates({
-    //   ...states,
-    //   [name]: {
-    //     ...states[name],
-    //     value: value,
-    //   },
-    // });
-    // console.log(states);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const values = mapStateToValues(states);
-    const { errors, isValid } = checkValidation(values);
-    if (isValid) {
-      console.log(states);
-    } else {
-      const oldState = deepClone(states);
-      Object.keys(errors).forEach((key) => {
-        oldState[key].error = errors[key];
-      });
-      setStates(oldState);
-    }
-  };
-
-  const handleFocus = (e) => {
-    const { name } = e.target;
-    const oldState = deepClone(states);
-    oldState[name].focus = true;
-    setStates(oldState);
-  };
-
-  const handleBlur = (e) => {
-    const key = e.target.name;
-    const oldState = deepClone(states);
-    const values = mapStateToValues(oldState);
-
-    const { errors } = checkValidation(values);
-
-    if (oldState[key].focus && errors[key]) {
-      oldState[key].error = errors[key];
-    } else {
-      oldState[key].error = "";
-    }
-
-    setStates(oldState);
-  };
-
-  const mapStateToValues = (states) => {
-    return Object.keys(states).reduce((acc, cur) => {
-      acc[cur] = states[cur].value;
-      return acc;
-    }, {});
-  };
-
-  const checkValidation = (values) => {
-    let errors = {};
-
-    const { name, email, password } = values;
-
-    if (!name) {
-      errors.name = "Invalid name field!";
-    }
-    if (!email) {
-      errors.email = "Invalid email field!";
-    }
-    if (!password) {
-      errors.password = "Invalid password field!";
-    }
-
-    return {
-      isValid: isObjectEmpty(errors),
-      errors,
-    };
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
+    <div>
+      <h1>Custom form with custom hook</h1>
+      <form onSubmit={(e) => handleSubmit(e, cb)}>
         <InputGroup
-          label={"What is your name?"}
           type={"text"}
-          name={"name"}
-          placeholder={"Enter Name..."}
-          value={states.name.value}
+          name={"firstName"}
+          label={"FirstName: "}
+          placeholder={"John"}
+          value={state.firstName.value}
           onChange={handleChange}
-          onFocus={handleFocus}
+          onFocus={handleFocused}
           onBlur={handleBlur}
-          error={states.name.error}
+          error={state.firstName.error}
         />
         <InputGroup
-          label={"What is your Email?"}
+          type={"text"}
+          name={"lastName"}
+          label={"LastName: "}
+          placeholder={"Doe"}
+          value={state.lastName.value}
+          onChange={handleChange}
+          onFocus={handleFocused}
+          onBlur={handleBlur}
+          error={state.lastName.error}
+        />
+        <InputGroup
           type={"email"}
           name={"email"}
-          placeholder={"Enter Email..."}
-          value={states.email.value}
+          label={"Email: "}
+          placeholder={"John@gmail.com"}
+          value={state.email.value}
           onChange={handleChange}
-          onFocus={handleFocus}
+          onFocus={handleFocused}
           onBlur={handleBlur}
-          error={states.email.error}
+          error={state.email.error}
         />
         <InputGroup
-          label={"What is your password?"}
           type={"password"}
           name={"password"}
-          placeholder={"Enter Password..."}
-          value={states.password.value}
+          label={"Password: "}
+          placeholder={"******"}
+          value={state.password.value}
           onChange={handleChange}
-          onFocus={handleFocus}
+          onFocus={handleFocused}
           onBlur={handleBlur}
-          error={states.password.error}
+          error={state.password.error}
         />
-        <button type="submit">Submit</button>
+        <div>
+          <button type="reset" onClick={handleClearInputs}>
+            Clear
+          </button>
+          <button type="submit">Submit</button>
+        </div>
       </form>
-    </>
+    </div>
   );
-}
+};
 
 export default App;
