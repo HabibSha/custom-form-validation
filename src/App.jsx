@@ -1,4 +1,5 @@
 import InputGroup from "./components/shared/InputGroup/InputGroup";
+import Task from "./components/tasks/Task";
 import useForm from "./hooks/useForm";
 
 const init = {
@@ -100,6 +101,8 @@ const App = () => {
           <button type="submit">Submit</button>
         </div>
       </form>
+      <hr />
+      <Task />
     </div>
   );
 };

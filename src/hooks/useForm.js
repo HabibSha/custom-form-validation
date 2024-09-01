@@ -8,15 +8,14 @@ const useForm = ({ init, validate }) => {
 
   // handleChange function
   const handleChange = (e) => {
-    const { name: key, value } = e.target;
+    const { name: key, value, type } = e.target;
 
     const oldState = deepClone(state);
-    oldState[key].value = value;
-    // if (type === "checkbox") {
-    //   oldState[key].value = "checked";
-    // } else {
-    //   oldState[key].value = value;
-    // }
+    if (type === "checkbox") {
+      oldState[key].value = "checked";
+    } else {
+      oldState[key].value = value;
+    }
 
     const { errors } = getErrors();
 
