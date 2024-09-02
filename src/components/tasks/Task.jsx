@@ -9,7 +9,7 @@ const init = {
 };
 
 const Task = () => {
-  const { formState, handleChange, handleSubmit } = useForm({
+  const { formState, handleChange, handleClearInputs, handleSubmit } = useForm({
     init,
     validate: true,
   });
@@ -38,6 +38,7 @@ const Task = () => {
         <select name="group" id="group" onChange={handleChange}>
           <option value="home">Home</option>
           <option value="office">Office</option>
+          <option value="relative">Relative</option>
         </select>
       </div>
       <div>
@@ -70,6 +71,7 @@ const Task = () => {
         onChange={handleChange}
       />
       <br />
+      <button onClick={handleClearInputs}>Clear</button>
       <button type="submit">Submit</button>
     </form>
   );
